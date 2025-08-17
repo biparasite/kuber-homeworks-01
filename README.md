@@ -138,10 +138,236 @@ kubectl run network-multitool --image=wbitt/network-multitool:openshift -n test
 
 ---
 
-### Правила приема работы
+### Ответ
 
-1. Домашняя работа оформляется в своем Git-репозитории в файле README.md. Выполненное домашнее задание пришлите ссылкой на .md-файл в вашем репозитории.
-2. Файл README.md должен содержать скриншоты вывода необходимых команд `kubectl` и скриншоты результатов.
-3. Репозиторий должен содержать файлы манифестов и ссылки на них в файле README.md.
+1. Deployment
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-init-deployment
+  namespace: test
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-init
+  template:
+    metadata:
+      labels:
+        app: nginx-init
+    spec:
+      initContainers:
+        - name: wait-for-service
+          image: busybox
+          command: [
+              "sh",
+              "-c",
+              '
+              until nslookup svc-nginx-init.test.svc.cluster.local; do
+              echo "Waiting for service to start...";
+              sleep 2;
+              done;
+              echo "Service is ready!"
+              ',
+            ]
+      containers:
+        - name: nginx
+          image: nginx
+          ports:
+            - containerPort: 80
+```
+
+2. POd Init
+
+<details> <summary>INIT</summary>
+
+![init](https://github.com/biparasite/kuber-homeworks-01/blob/main/task_2.1.png "init")
+
+</details>
+
+3. Service
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-nginx-init
+  namespace: test
+spec:
+  selector:
+    app: nginx-init
+  ports:
+    - name: http-port
+      protocol: TCP
+      port: 80
+      targetPort: 80
+```
+
+<details> <summary>svc</summary>
+
+![svc](https://github.com/biparasite/kuber-homeworks-01/blob/main/task_2.3.png "svc")
+
+</details>
+
+4. Run pod
+
+```bash
+kubectl logs nginx-init-deployment-57898454c7-4bvgk -c wait-for-service  -n test
+```
+
+<details> <summary>logs init pod</summary>
+
+```bash
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+** server can't find svc-nginx-init.test.svc.cluster.local: NXDOMAIN
+
+Waiting for service to start...
+Server:         10.96.0.10
+Address:        10.96.0.10:53
+
+
+Name:   svc-nginx-init.test.svc.cluster.local
+Address: 10.101.107.3
+
+Service is ready!
+```
+
+</details>
+
+<details> <summary>describe pod</summary>
+
+```bash
+Events:
+  Type    Reason     Age    From               Message
+  ----    ------     ----   ----               -------
+  Normal  Scheduled  7m58s  default-scheduler  Successfully assigned test/nginx-init-deployment-57898454c7-4bvgk to k8s-worker-node2
+  Normal  Pulling    7m58s  kubelet            Pulling image "busybox"
+  Normal  Pulled     7m57s  kubelet            Successfully pulled image "busybox" in 1.07s (1.07s including waiting). Image size: 2223685 bytes.
+  Normal  Created    7m57s  kubelet            Created container wait-for-service
+  Normal  Started    7m57s  kubelet            Started container wait-for-service
+  Normal  Pulling    4m44s  kubelet            Pulling image "nginx"
+  Normal  Pulled     4m43s  kubelet            Successfully pulled image "nginx" in 1.161s (1.161s including waiting). Image size: 72324501 bytes.
+  Normal  Created    4m43s  kubelet            Created container nginx
+  Normal  Started    4m42s  kubelet            Started container nginx
+```
+
+</details>
+
+<details> <summary>run nginx</summary>
+
+![nginx](https://github.com/biparasite/kuber-homeworks-01/blob/main/task_2.4.png "nginx")
+
+</details>
 
 ---
