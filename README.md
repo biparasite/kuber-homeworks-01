@@ -179,7 +179,7 @@ spec:
             - containerPort: 80
 ```
 
-2. POd Init
+2. Pod Init
 
 <details> <summary>INIT</summary>
 
