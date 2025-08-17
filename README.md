@@ -85,7 +85,7 @@ kubectl scale deployment nginx-multitool-deployment --replicas=2 -n test
 
 </details>
 
-4.
+4. Service
 
 ```yaml
 apiVersion: v1
@@ -117,7 +117,7 @@ spec:
 
 </details>
 
-4. Pod and curl
+5. Pod and curl
 
 ```bash
 kubectl run network-multitool --image=wbitt/network-multitool:openshift -n test
